@@ -15,9 +15,10 @@ import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { LinkType } from '@prisma/client';
 
 const urlRegex =
-  /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+([\/?].*)?$/;
+  /^(https?:\/\/)?([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/[a-zA-Z0-9-./]*)?(\?[a-zA-Z0-9&%=._-]+)?$/;
 const schema = z.object({
   link: z.string().regex(urlRegex, {
     message: 'Invalid URL format',
@@ -41,7 +42,10 @@ export default function CreateLink() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify({
+            type: LinkType.Link,
+            payload: data.link,
+          }),
         }
       );
       if (response.ok) {
