@@ -76,7 +76,7 @@ export default function CreateLink() {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col px-14 py-7">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

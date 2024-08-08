@@ -5,6 +5,7 @@ import { ThemeProvider } from 'next-themes';
 import { Inter } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Toaster } from 'react-hot-toast';
+import { NextUIProvider } from '@nextui-org/react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,12 +24,14 @@ export default function RootLayout({
       <SpeedInsights />
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="fixed inset-0 flex items-center justify-center bg-blue-100">
-            <div className="bg-white shadow-xl rounded-xl w-2/3 h-2/3 min-w-[650px] min-h-[600px] overflow-hidden">
-              {children}
+          <NextUIProvider>
+            <div className="fixed inset-0 flex items-center justify-center bg-blue-100 w-full h-full">
+              <div className="bg-white shadow-xl rounded-xl  w-11/12 h-5/6 sm:w-3/4 sm:h-3/4 md:w-2/3 md:h-2/3 transition-all duration-300 overflow-hidden">
+                {children}
+              </div>
             </div>
-          </div>
-          <Toaster position="top-center" reverseOrder={false} />
+            <Toaster position="top-center" reverseOrder={false} />
+          </NextUIProvider>
         </ThemeProvider>
       </body>
     </html>
