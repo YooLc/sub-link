@@ -23,7 +23,7 @@ export default function RootLayout({
       <SpeedInsights />
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="fixed inset-0 flex items-center justify-center bg-pink-100">
+          <div className="fixed inset-0 flex items-center justify-center bg-blue-100">
             <div className="bg-white shadow-xl rounded-xl w-2/3 h-2/3 min-w-[650px] min-h-[600px] overflow-hidden">
               {children}
             </div>
