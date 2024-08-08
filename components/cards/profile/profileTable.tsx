@@ -21,9 +21,7 @@ export default function ProfileTable() {
   const limit = 5;
 
   const fetchLinks = async (page: number) => {
-    const res = await fetch(`/api/list?page=${page}&limit=${limit}`, {
-      cache: 'force-cache',
-    });
+    const res = await fetch(`/api/list?page=${page}&limit=${limit}`);
     const json = await res.json();
     setData(json.data);
   };

@@ -24,13 +24,13 @@ export async function GET(req: NextRequest) {
   try {
     const total = await prisma.link.count({
       where: {
-        creator: session.user.id,
+        creator: session.user.email,
       },
     });
 
     const links = await prisma.link.findMany({
       where: {
-        creator: session.user.id,
+        creator: session.user.email,
       },
       take: limit,
       skip: (page - 1) * limit,
