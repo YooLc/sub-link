@@ -11,6 +11,15 @@ const schema = z.object({
 });
 
 export async function GET(req: NextRequest) {
+  // Delete expired links
+  await prisma.link.deleteMany({
+    where: {
+      expiresAt: {
+        lte: new Date(),
+      },
+    },
+  });
+
   const link = req.nextUrl.searchParams.get('link');
 
   try {

@@ -1,19 +1,11 @@
 import type { Metadata } from 'next';
-import localFont from 'next/font/local';
 import './globals.css';
 
 import { ThemeProvider } from 'next-themes';
 import { Inter } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Toaster } from 'react-hot-toast';
 
-const geistSans = localFont({
-  src: './fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-});
-const geistMono = localFont({
-  src: './fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
-});
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -36,6 +28,7 @@ export default function RootLayout({
               {children}
             </div>
           </div>
+          <Toaster position="top-center" reverseOrder={false} />
         </ThemeProvider>
       </body>
     </html>

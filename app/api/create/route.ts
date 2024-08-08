@@ -5,6 +5,8 @@ import murmur from 'murmurhash';
 import prisma from '@/prisma';
 import { LinkType } from '@prisma/client';
 
+import { auth } from '@/auth';
+
 const urlRegex =
   /^(https?:\/\/)?([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/[a-zA-Z0-9-./]*)?(\?[a-zA-Z0-9&%=._-]+)?$/;
 const schema = z.object({
@@ -14,8 +16,51 @@ const schema = z.object({
 });
 
 const maxTextLength = 1024;
+const maxCreateCount = 32;
+const maxTotalCount = 1024;
 
 async function createLink(type: LinkType, link: string) {
+  const session = await auth();
+
+  if (!session || !session.user?.email) {
+    return NextResponse.json({
+      code: -1,
+      message: 'Please login',
+      data: null,
+    });
+  }
+
+  // Delete expired links
+  await prisma.link.deleteMany({
+    where: {
+      expiresAt: {
+        lte: new Date(),
+      },
+    },
+  });
+
+  const total_count = await prisma.link.count();
+  if (total_count >= maxTotalCount) {
+    return NextResponse.json({
+      code: -1,
+      message: `Database full, only allow ${maxTotalCount} active links`,
+      data: null,
+    });
+  }
+
+  const create_count = await prisma.link.count({
+    where: {
+      creator: session.user.email,
+    },
+  });
+  if (create_count >= maxCreateCount) {
+    return NextResponse.json({
+      code: -1,
+      message: `You can only create ${maxCreateCount} active links`,
+      data: null,
+    });
+  }
+
   let short_link = '';
 
   try {
@@ -40,16 +85,17 @@ async function createLink(type: LinkType, link: string) {
         type: type,
         payload: link,
         expiresAt: expiresAt,
+        creator: session.user.email,
       },
     });
 
     short_link = `${domain}`;
     console.log('Created:', created, short_link);
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json({
       code: -1,
-      message: 'Failed to create short link',
-      data: error,
+      message: `Failed to create short link: ${error.message}`,
+      data: null,
     });
   }
 
